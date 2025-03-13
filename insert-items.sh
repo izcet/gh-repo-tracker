@@ -21,8 +21,10 @@ while read LINE ; do
   USERNAME="$(echo "$TITLE" | sed 's:/.*::')"
   mkdir -p "$OUTDIR/$USERNAME"
 
-
-  if [ ! -f "$OUTDIR/$TITLE" ] ; then
+  if [ -f "$OUTDIR/$TITLE.md" ] ; then
+    echo "$OUTDIR/$TITLE already exists, not updating"
+  else
+    echo "working on $LINE"
     if [ "$HTTPCODE" -eq "200" ] ; then
       TAGS="#public ${TAGS}"
     elif [ "$HTTPCODE" -eq "404" ] ; then
@@ -33,11 +35,10 @@ while read LINE ; do
 
     # expands to items/username/projectname.md
     echo -e "$URL\n$TAGS" >> "$OUTDIR/$TITLE.md"
+    
     #? is the sed delimiter because /:-[] all appear in urls and markdown
     SED_REPLACE="s?$OUTFILE_SECTION?&\n- [ ] [[items/$TITLE|$TITLE]]\n  $TAGS?"
-    echo $SED_REPLACE
     sed -i "$SED_REPLACE" "$OUTFILE" 
 
   fi
-  echo $LINE
 done < "$INFILE"
