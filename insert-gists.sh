@@ -25,6 +25,7 @@ while read LINE ; do
   else
     echo "working on $LINE"
     if [ "$HTTPCODE" -eq "200" ] ; then
+      # TODO: doesn't work, status code is always 200
       TAGS="#public ${TAGS}"
     elif [ "$HTTPCODE" -eq "404" ] ; then
       TAGS="#private ${TAGS}"
